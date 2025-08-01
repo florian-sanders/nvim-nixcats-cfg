@@ -15,7 +15,8 @@ return {
   { import = 'custom.plugins.todo-comments' },
   { import = 'custom.plugins.mini' },
   { import = 'custom.plugins.treesitter' },
-  { import = 'custom.plugins.codecompanion' },
+  { import = 'custom.plugins.persistence' },
   { import = 'custom.plugins.flash' },
   { import = 'custom.plugins.multiple-cursors' },
+  { import = 'custom.plugins.claudecode' },
 }

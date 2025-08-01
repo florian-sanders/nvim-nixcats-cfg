@@ -1,3 +1,5 @@
 tags
 .luarc.json
 /result
+.claude/
+AGENTS.md

@@ -38,6 +38,11 @@
     # for specific tags, branches and commits, see:
     # https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-flake.html#examples
 
+    plugins-claudecode-nvim = {
+      url = "github:coder/claudecode.nvim";
+      flake = false;
+    };
+
   };
 
   # see :help nixCats.flake.outputs
@@ -58,7 +63,7 @@
       # will not apply to module imports
       # as that will have your system values
       extra_pkg_config = {
-        # allowUnfree = true;
+        allowUnfree = true;
       };
       # management of the system variable is one of the harder parts of using flakes.
 
@@ -123,6 +128,7 @@
               unzip
               vtsls
               prettierd
+              opencode
             ];
             kickstart-debug = [
               delve
@@ -156,6 +162,8 @@
               mini-nvim
               nvim-treesitter.withAllGrammars
               snacks-nvim
+              persistence-nvim
+              pkgs.neovimPlugins.claudecode-nvim
               # This is for if you only want some of the grammars
               # (nvim-treesitter.withPlugins (
               #   plugins: with plugins; [
@@ -195,15 +203,6 @@
           # NOTE: this template is using lazy.nvim so, which list you put them in is irrelevant.
           # startupPlugins or optionalPlugins, it doesnt matter, lazy.nvim does the loading.
           # I just put them all in startupPlugins. I could have put them all in here instead.
-          optionalPlugins = { };
-
-          # shared libraries to be added to LD_LIBRARY_PATH
-          # variable available to nvim runtime
-          sharedLibraries = {
-            general = with pkgs; [
-              # libgit2
-            ];
-          };
 
           # environmentVariables:
           # this section is for environmentVariables that should be available
@@ -335,7 +334,10 @@
         devShells = {
           default = pkgs.mkShell {
             name = defaultPackageName;
-            packages = [ defaultPackage ];
+            packages = [ 
+              defaultPackage 
+              (import nixpkgs { inherit system; config.allowUnfree = true; }).claude-code
+            ];
             inputsFrom = [ ];
             shellHook = '''';
           };

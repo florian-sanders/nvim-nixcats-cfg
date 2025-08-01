@@ -3,14 +3,39 @@ return {
   lazy = false,
   priority = 1000,
   opts = {
-    picker = { enabled = true },
+    picker = { 
+      enabled = true,
+      win = {
+        input = {
+          keys = {
+            ["<c-h>"] = { "toggle_hidden", mode = { "i", "n" } },
+            ["<c-i>"] = { "toggle_ignored", mode = { "i", "n" } },
+            ["<c-g>"] = { "toggle_follow", mode = { "i", "n" } },
+            ["<c-f>"] = { "toggle_filter", mode = { "i", "n" } },
+          }
+        }
+      }
+    },
     explorer = { enabled = true },
     input = { enabled = true },
     indent = {
-      enabled = true,
-      current_scope_only = true,
+      indent = {
+        enabled = true,
+        char = "┊", -- Subtle dotted line for full mode
+      },
+      chunk = {
+        enabled = true,
+        char = {
+          horizontal = '─',
+          vertical = '│',
+          corner_top = '╭',
+          corner_bottom = '╰',
+          arrow = '─',
+        },
+      },
     },
     scope = { enabled = true },
+    zen = { enabled = true },
   },
   init = function()
     vim.api.nvim_create_autocmd('User', {
@@ -42,6 +67,29 @@ return {
         Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map '<leader>ub'
         Snacks.toggle.inlay_hints():map '<leader>uh'
         Snacks.toggle.indent():map '<leader>ug'
+
+        -- Custom toggle between full and chunk-only indent guides
+        Snacks.toggle({
+          name = "Indent Mode",
+          get = function()
+            return require('snacks').config.indent.indent.enabled
+          end,
+          set = function(state)
+            if state then
+              -- Full mode: show all indent guides + chunk highlighting
+              require('snacks').config.indent.indent.enabled = true
+              require('snacks').config.indent.chunk.enabled = true
+            else
+              -- Subtle mode: only chunk highlighting
+              require('snacks').config.indent.indent.enabled = false
+              require('snacks').config.indent.chunk.enabled = true
+            end
+            -- Refresh the display
+            require('snacks').indent.disable()
+            require('snacks').indent.enable()
+          end,
+        }):map('<leader>ui')
+        Snacks.toggle.zen():map '<leader>uz'
         Snacks.toggle.dim():map '<leader>uD'
       end,
     })
@@ -333,6 +381,7 @@ return {
       end,
       desc = 'Search for Plugin Spec',
     },
+
     {
       '<leader>sq',
       function()

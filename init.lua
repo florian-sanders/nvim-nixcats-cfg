@@ -121,6 +121,9 @@ vim.opt.number = true
 -- TODO Flo: keymap to toggle this?
 vim.opt.relativenumber = true
 
+-- Always show all text, no conceal
+vim.opt.conceallevel = 0
+
 -- Disable mouse
 vim.opt.mouse = ''
 
@@ -173,6 +176,12 @@ vim.opt.scrolloff = 10
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+
+-- Save file with Ctrl+s in normal mode
+vim.keymap.set('n', '<C-s>', ':w<CR>', { desc = 'Save file' })
+
+-- Load custom keymaps
+pcall(require, "custom.keymaps")
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
