@@ -128,13 +128,7 @@
               unzip
               vtsls
               prettierd
-              opencode
-            ];
-            kickstart-debug = [
-              delve
-            ];
-            kickstart-lint = [
-              markdownlint-cli
+              (callPackage ./stylelint-lsp.nix {})
             ];
           };
 
@@ -334,9 +328,12 @@
         devShells = {
           default = pkgs.mkShell {
             name = defaultPackageName;
-            packages = [ 
-              defaultPackage 
-              (import nixpkgs { inherit system; config.allowUnfree = true; }).claude-code
+            packages = [
+              defaultPackage
+              (import nixpkgs {
+                inherit system;
+                config.allowUnfree = true;
+              }).claude-code
             ];
             inputsFrom = [ ];
             shellHook = '''';

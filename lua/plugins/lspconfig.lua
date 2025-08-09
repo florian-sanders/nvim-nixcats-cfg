@@ -78,8 +78,9 @@ return {
         --
         -- In this case, we create a function that lets us more easily define mappings specific
         -- for LSP related items. It sets the mode, buffer and description for us each time.
-        local map = function(keys, func, desc)
-          vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+        local map = function(keys, func, desc, opts)
+          local options = vim.tbl_extend('force', { buffer = event.buf, desc = 'LSP: ' .. desc }, opts or {})
+          vim.keymap.set('n', keys, func, options)
         end
 
         -- Jump to the definition of the word under your cursor.
@@ -90,17 +91,24 @@ return {
         map('gi', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
         map('gt', vim.lsp.buf.type_definition, '[G]oto [T]ype Definition')
         map('gr', vim.lsp.buf.references, '[G]oto [R]eferences')
-        
+
         -- Get documentation under cursor
         map('K', vim.lsp.buf.hover, 'Hover Documentation')
-        
+
         -- Handle code actions, rename, and formatting
-        map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+        map('<leader>cr', function()
+          return ':IncRename ' .. vim.fn.expand '<cword>'
+        end, '[C]ode [R]ename', { expr = true })
         map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-        map('<leader>f', function() 
-          vim.lsp.buf.format { async = true } 
+        map('<leader>cA', function()
+          vim.lsp.buf.code_action {
+            context = { only = { 'quickfix', 'source' } },
+          }
+        end, '[C]ode [A]ction Fix All')
+        map('<leader>f', function()
+          vim.lsp.buf.format { async = true }
         end, '[F]ormat Document')
-        
+
         -- Document and workspace symbols
         map('<leader>ds', vim.lsp.buf.document_symbol, '[D]ocument [S]ymbols')
         map('<leader>ws', vim.lsp.buf.workspace_symbol, '[W]orkspace [S]ymbols')
@@ -247,9 +255,9 @@ return {
         },
         preferences = {
           includePackageJsonAutoImports = 'off',
-          importModuleSpecifier = 'relative',
+          importModuleSpecifier = 'project-relative',
           importModuleSpecifierEnding = 'js',
-        }
+        },
       },
       javascript = {
         tsserver = {
@@ -257,17 +265,19 @@ return {
         },
         preferences = {
           includePackageJsonAutoImports = 'off',
-          importModuleSpecifier = 'relative',
+          importModuleSpecifier = 'project-relative',
           importModuleSpecifierEnding = 'js',
-        }
+        },
       },
       experimental = {
         completion = {
           enableServerSideFuzzyMatch = true,
-          entriesLimit = 50
+          entriesLimit = 50,
         },
-      }
+      },
     }
+
+    servers.marksman = {}
 
     -- NOTE: nixCats: if nix, use lspconfig instead of mason
     -- You could MAKE it work, using lspsAndRuntimeDeps and sharedLibraries in nixCats
@@ -308,3 +318,4 @@ return {
     end
   end,
 }
+

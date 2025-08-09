@@ -3,38 +3,45 @@ return {
   lazy = false,
   priority = 1000,
   opts = {
-    picker = { 
+    cmdline = { enabled = true },
+    picker = {
       enabled = true,
       win = {
         input = {
           keys = {
-            ["<c-h>"] = { "toggle_hidden", mode = { "i", "n" } },
-            ["<c-i>"] = { "toggle_ignored", mode = { "i", "n" } },
-            ["<c-g>"] = { "toggle_follow", mode = { "i", "n" } },
-            ["<c-f>"] = { "toggle_filter", mode = { "i", "n" } },
-          }
-        }
-      }
-    },
-    explorer = { enabled = true },
-    input = { enabled = true },
-    indent = {
-      indent = {
-        enabled = true,
-        char = "┊", -- Subtle dotted line for full mode
-      },
-      chunk = {
-        enabled = true,
-        char = {
-          horizontal = '─',
-          vertical = '│',
-          corner_top = '╭',
-          corner_bottom = '╰',
-          arrow = '─',
+            ['<c-h>'] = { 'toggle_hidden', mode = { 'i', 'n' } },
+            ['<c-i>'] = { 'toggle_ignored', mode = { 'i', 'n' } },
+            ['<c-g>'] = { 'toggle_follow', mode = { 'i', 'n' } },
+            ['<c-f>'] = { 'toggle_filter', mode = { 'i', 'n' } },
+          },
         },
       },
     },
-    scope = { enabled = true },
+    explorer = { enabled = true },
+    input = { 
+      enabled = true,
+      -- Make snacks input the default for vim.ui.input
+      override = true,
+    },
+    indent = {
+      indent = {
+        enabled = true,
+        char = '‧', -- dotted line character
+        only_current = true,
+      },
+      chunk = {
+        enabled = true, -- enable chunk rendering with curved borders
+        only_current = true,
+        char = {
+          corner_top = '╭', -- curved top corner
+          corner_bottom = '╰', -- curved bottom corner
+          horizontal = '', -- horizontal line
+          vertical = '│', -- vertical line
+          arrow = '', -- arrow for chunk indication
+        },
+      },
+      scope = { enabled = false },
+    },
     zen = { enabled = true },
   },
   init = function()
@@ -67,28 +74,6 @@ return {
         Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map '<leader>ub'
         Snacks.toggle.inlay_hints():map '<leader>uh'
         Snacks.toggle.indent():map '<leader>ug'
-
-        -- Custom toggle between full and chunk-only indent guides
-        Snacks.toggle({
-          name = "Indent Mode",
-          get = function()
-            return require('snacks').config.indent.indent.enabled
-          end,
-          set = function(state)
-            if state then
-              -- Full mode: show all indent guides + chunk highlighting
-              require('snacks').config.indent.indent.enabled = true
-              require('snacks').config.indent.chunk.enabled = true
-            else
-              -- Subtle mode: only chunk highlighting
-              require('snacks').config.indent.indent.enabled = false
-              require('snacks').config.indent.chunk.enabled = true
-            end
-            -- Refresh the display
-            require('snacks').indent.disable()
-            require('snacks').indent.enable()
-          end,
-        }):map('<leader>ui')
         Snacks.toggle.zen():map '<leader>uz'
         Snacks.toggle.dim():map '<leader>uD'
       end,
