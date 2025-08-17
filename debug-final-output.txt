@@ -1,0 +1,55 @@
+Testing our custom query:
+Query text:
+(
+  (binding_set
+    (comment) @_comment
+    .
+    (binding
+      (apply_expression
+        (indented_string_expression
+          (string_fragment) @injection.content))))
+  (#lua-match? @_comment "^#%s*[Ll]anguage%s+lua")
+  (#set! injection.language "lua")
+)
+
+Query parsed successfully
+Found 4 captures:
+  _comment [126:10-126:24]: # Language lua
+  _comment [126:10-126:24]: # Language lua
+  injection.content [127:54-166:24]: \n            -- Generated init.lua for Nix-provided plugins\n\n            -- Load basic configuration...
+  injection.content [166:37-181:10]: ",\n                patterns = { "." },\n                -- Enable fallback for plugins not in nixpkgs...
+
+System injection query results:
+System query found 32 captures:
+  injection.content [24:10-24:68]: # All plugins provided by Nix (39 out of 40 total plugins)
+  injection.content [26:12-26:31]: # Core dependencies
+  injection.content [31:12-31:36]: # LSP & Language Support
+  injection.content [40:12-40:35]: # Completion & Snippets
+  injection.content [44:12-44:29]: # Editor Features
+  injection.content [57:12-57:36]: # Debug Adapter Protocol
+  injection.content [63:12-63:29]: # Git Integration
+  injection.content [68:12-68:28]: # UI & Interface
+  injection.content [76:12-76:35]: # Optional dependencies
+  injection.content [80:12-80:28]: # AI Integration
+  injection.content [84:10-84:44]: # Create plugin farm for lazy.nvim
+  injection.content [97:10-97:30]: # Treesitter parsers
+  injection.content [125:10-125:69]: # Generate init.lua that sets up lazy.nvim with Nix plugins
+  injection.content [126:10-126:24]: # Language lua
+  injection.content [196:10-196:61]: # Create a wrapper that includes treesitter parsers
+  _func [197:27-197:51]: pkgs.writeShellScriptBin
+  _func [197:27-197:51]: pkgs.writeShellScriptBin
+  _func [197:27-197:51]: pkgs.writeShellScriptBin
+  _func [197:27-197:51]: pkgs.writeShellScriptBin
+  _func [197:27-197:51]: pkgs.writeShellScriptBin
+  injection.content [197:61-198:36]: \n            export XDG_CONFIG_HOME="
+  injection.content [198:38-198:39]: $
+  injection.content [198:39-203:22]: {XDG_CONFIG_HOME:-$HOME/.config}"\n            mkdir -p "$XDG_CONFIG_HOME/nvim"\n\n            # Link t...
+  injection.content [203:42-206:17]: /parser" "$XDG_CONFIG_HOME/nvim/parser"\n            fi\n\n            exec 
+  injection.content [206:33-207:10]: /bin/nvim "$@"\n          
+  injection.content [224:14-224:37]: # The configured neovim
+  injection.content [227:14-227:28]: # System tools
+  injection.content [234:14-234:27]: # LSP servers
+  injection.content [248:14-248:26]: # Formatters
+  injection.content [252:14-252:27]: # Debug tools
+  _path [256:12-256:21]: shellHook
+  injection.content [256:26-265:12]: \n              echo "🚀 Neovim with 39 Nix-provided plugins loaded!"\n              echo "📦 Miss...

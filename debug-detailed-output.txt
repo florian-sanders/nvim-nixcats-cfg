@@ -1,0 +1,34 @@
+Found comment at line 127:           # Language lua
+Looking for string expressions near the comment:
+                            comment [126:10-126:24]
+                            binding [127:10-181:13]
+                              attrpath [127:10-127:23]
+                                identifier [127:10-127:23]
+                              = [127:24-127:25]
+                              apply_expression [127:26-181:12]
+                                apply_expression [127:26-127:51]
+                                  select_expression [127:26-127:40]
+                                    variable_expression [127:26-127:30]
+                                      identifier [127:26-127:30]
+                                    . [127:30-127:31]
+                                    attrpath [127:31-127:40]
+                                      identifier [127:31-127:40]
+                                  string_expression [127:41-127:51]
+                                    " [127:41-127:42]
+                                    string_fragment [127:42-127:50]
+                                    " [127:50-127:51]
+                                indented_string_expression [127:52-181:12]
+                                  '' [127:52-127:54]
+                                  string_fragment [127:54-166:24]
+                                    *** THIS LOOKS LIKE THE LUA STRING! ***
+                                    TEXT (first 200 chars): 
+            -- Generated init.lua for Nix-provided plugins
+
+            -- Load basic configuration (options, keymaps, etc.)
+            require('config.options')
+
+            -- Bootstrap lazy.nvim 
+                                    FULL PATH: source_code > attrset_expression > binding_set > binding > function_expression > let_expression > attrset_expression > binding_set > binding > apply_expression > parenthesized_expression > function_expression > let_expression > binding_set > binding > apply_expression > indented_string_expression > string_fragment
+
+Testing current injection query:
+  Capture injection.content [126:10-126:24]

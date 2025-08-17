@@ -1,10 +1,4 @@
--- NOTE: nixCats: this just gives nixCats global command a default value
--- so that it doesnt throw an error if you didnt install via nix.
--- usage of both this setup and the nixCats command is optional,
--- but it is very useful for passing info from nix to lua so you will likely use it at least once.
-require('nixCatsUtils').setup {
-  non_nix_value = true,
-}
+-- Standard Neovim configuration without nixCats
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -13,9 +7,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
--- NOTE: nixCats: we asked nix if we have it instead of setting it here.
--- because nix is more likely to know if we have a nerd font or not.
-vim.g.have_nerd_font = nixCats 'have_nerd_font'
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -144,75 +136,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- NOTE: nixCats: You might want to move the lazy-lock.json file
-local function getlockfilepath()
-  if require('nixCatsUtils').isNixCats and type(nixCats.settings.unwrappedCfgPath) == 'string' then
-    return nixCats.settings.unwrappedCfgPath .. '~/.config/nixos-config/dotfiles/nvim/lazy-lock.json'
-  else
-    return vim.fn.stdpath 'config' .. '~/.config/nixos-config/dotfiles/nvim/lazy-lock.json'
-  end
-end
-local lazyOptions = {
-  lockfile = getlockfilepath(),
-  ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
-  },
-}
-
--- [[ Configure and install plugins ]]
---
---  To check the current status of your plugins, run
---    :Lazy
---
---  You can press `?` in this menu for help. Use `:q` to close the window
---
---  To update plugins you can run
---    :Lazy update
---
--- NOTE: Here is where you install your plugins.
--- NOTE: nixCats: this the lazy wrapper. Use it like require('lazy').setup() but with an extra
--- argument, the path to lazy.nvim as downloaded by nix, or nil, before the normal arguments.
-require('nixCatsUtils.lazyCat').setup(nixCats.pawsible { 'allPlugins', 'start', 'lazy.nvim' }, {
-  -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
-
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
-  -- NOTE: nixCats: instead of uncommenting them, you can enable them
-  -- from the categories set in your packageDefinitions in your flake or other template!
-  -- This is because within them, we used nixCats to check if it should be loaded!
-  -- require 'plugins.debug',
-  -- -- require 'kickstart.plugins.indent_line',
-  -- require 'plugins.autopairs',
-  -- require 'plugins.gitsigns', -- adds gitsigns recommend keymaps
-
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  { import = 'plugins' },
-}, lazyOptions)
+-- Plugin management is now handled by Nix
+-- This file only contains Neovim options and basic configuration
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

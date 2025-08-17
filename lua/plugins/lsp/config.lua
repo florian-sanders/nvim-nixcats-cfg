@@ -111,54 +111,80 @@ function M.load_servers()
   return servers
 end
 
+-- Helper function to check if an LSP binary is available in PATH
+local function is_lsp_available(lsp_name)
+  local handle = io.popen('which ' .. lsp_name .. ' 2>/dev/null')
+  if handle then
+    local result = handle:read('*a')
+    handle:close()
+    return result and result ~= ''
+  end
+  return false
+end
+
+-- Map server names to their binary names
+local server_to_binary = {
+  lua_ls = 'lua-language-server',
+  nixd = 'nixd',
+  nil_ls = 'nil',
+  bashls = 'bash-language-server',
+  vtsls = 'vtsls',
+  yamlls = 'yaml-language-server',
+  dockerls = 'docker-langserver',
+  rust_analyzer = 'rust-analyzer',
+  gopls = 'gopls',
+  pyright = 'pyright',
+  clangd = 'clangd',
+  taplo = 'taplo',
+  marksman = 'marksman',
+  stylelint_lsp = 'stylelint-lsp',
+  rnix = 'rnix-lsp',
+}
+
 function M.setup_servers()
   local servers = M.load_servers()
-
-  -- NOTE: Simplified setup - bypass nixCats for now
   local lspconfig = require('lspconfig')
+  
+  -- Categorize servers: available in PATH vs need Mason
+  local nix_servers = {}
+  local mason_servers = {}
+  
   for server_name, cfg in pairs(servers) do
+    local binary_name = server_to_binary[server_name] or server_name
+    if is_lsp_available(binary_name) then
+      nix_servers[server_name] = cfg
+      print('Found ' .. server_name .. ' via Nix/PATH')
+    else
+      mason_servers[server_name] = cfg
+      print('Will install ' .. server_name .. ' via Mason')
+    end
+  end
+  
+  -- Setup servers available from Nix/PATH
+  for server_name, cfg in pairs(nix_servers) do
     lspconfig[server_name].setup(cfg)
   end
   
-  -- NOTE: nixCats: if nix, use lspconfig instead of mason
-  --[[
-  if require('nixCatsUtils').isNixCats then
-    print('Using nixCats setup')
-    -- set up the servers to be loaded on the appropriate filetypes!
-    local lspconfig = require('lspconfig')
-    for server_name, cfg in pairs(servers) do
-      print('Setting up server:', server_name)
-      lspconfig[server_name].setup(cfg)
-    end
-  else
-    -- NOTE: nixCats: and if no nix, use mason
-
-    -- Ensure the servers and tools above are installed
-    --  To check the current status of installed tools and/or manually install
-    --  other tools, you can run
-    --    :Mason
-    --
-    --  You can press `g?` for help in this menu.
+  -- Setup Mason for missing servers
+  if next(mason_servers) then
     require('mason').setup()
-
-    -- You can add other tools here that you want Mason to install
-    -- for you, so that they are available from within Neovim.
-    local ensure_installed = vim.tbl_keys(servers or {})
+    
+    local ensure_installed = vim.tbl_keys(mason_servers)
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
+    
     require('mason-lspconfig').setup {
       handlers = {
         function(server_name)
-          local lspconfig = require('lspconfig')
-          lspconfig[server_name].setup(servers[server_name] or {})
+          if mason_servers[server_name] then
+            lspconfig[server_name].setup(mason_servers[server_name])
+          end
         end,
       },
     }
   end
-  --]]
 end
 
 return M

@@ -1,27 +1,12 @@
 {
   "nodes": {
-    "nixCats": {
-      "locked": {
-        "lastModified": 1753170780,
-        "narHash": "sha256-rxnjPhOu7kr3REU8AhbKwRYnXHWlRXBqgWOO9MD0HyY=",
-        "owner": "BirdeeHub",
-        "repo": "nixCats-nvim",
-        "rev": "e0c3fd5c218c808ce31e29caa91df43c65d7dfc6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "BirdeeHub",
-        "repo": "nixCats-nvim",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1754122398,
-        "narHash": "sha256-CyIrZ68gVLSZGa2ERK7zc2dGabvWp2A8PM6PII9M7gI=",
+        "lastModified": 1755268003,
+        "narHash": "sha256-nNaeJjo861wFR0tjHDyCnHs1rbRtrMgxAKMoig9Sj/w=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "c02d05bcf73fb496c604798c2268ed424a09e73e",
+        "rev": "32f313e49e42f715491e1ea7b306a87c16fe0388",
         "type": "github"
       },
       "original": {
@@ -31,27 +16,9 @@
         "type": "github"
       }
     },
-    "plugins-claudecode-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1753895824,
-        "narHash": "sha256-qmZPjZJ9UFxAWCY3NQwsu0nEniG/UasV/iCrG3S5tPQ=",
-        "owner": "coder",
-        "repo": "claudecode.nvim",
-        "rev": "d0f97489d9064bdd55592106e99aa5f355a09914",
-        "type": "github"
-      },
-      "original": {
-        "owner": "coder",
-        "repo": "claudecode.nvim",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
-        "nixCats": "nixCats",
-        "nixpkgs": "nixpkgs",
-        "plugins-claudecode-nvim": "plugins-claudecode-nvim"
+        "nixpkgs": "nixpkgs"
       }
     }
   },

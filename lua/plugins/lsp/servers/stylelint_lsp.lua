@@ -1,8 +1,3 @@
--- Only enable stylelint_lsp if we're using nixCats
-if not require('nixCatsUtils').isNixCats then
-  return nil
-end
-
 return {
   cmd = { 'stylelint-lsp', '--stdio' },
   filetypes = { 'css', 'less', 'scss', 'sugarss', 'vue', 'wxss', 'javascript', 'typescript' },

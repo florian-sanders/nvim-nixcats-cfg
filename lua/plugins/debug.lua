@@ -8,8 +8,7 @@
 
 return {
   'mfussenegger/nvim-dap',
-  -- NOTE: nixCats: return true only if category is enabled, else false
-  enabled = require('nixCatsUtils').enableForCategory("kickstart-debug"),
+
   dependencies = {
     -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
@@ -18,9 +17,8 @@ return {
     'nvim-neotest/nvim-nio',
 
     -- Installs the debug adapters for you
-    -- NOTE: nixCats: dont use mason on nix. We can already download stuff just fine.
-    { 'williamboman/mason.nvim', enabled = require('nixCatsUtils').lazyAdd(true, false) },
-    { 'jay-babu/mason-nvim-dap.nvim', enabled = require('nixCatsUtils').lazyAdd(true, false) },
+    'williamboman/mason.nvim',
+    'jay-babu/mason-nvim-dap.nvim',
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
@@ -29,8 +27,16 @@ return {
     local dap = require 'dap'
     local dapui = require 'dapui'
 
-    -- NOTE: nixCats: dont use mason on nix. We can already download stuff just fine.
-    if not require('nixCatsUtils').isNixCats then
+    -- Check if delve is available in PATH, otherwise use Mason
+    local handle = io.popen('which delve 2>/dev/null')
+    local delve_available = false
+    if handle then
+      local result = handle:read('*a')
+      handle:close()
+      delve_available = result and result ~= ''
+    end
+    
+    if not delve_available then
       require('mason-nvim-dap').setup {
         -- Makes a best effort to setup the various debuggers with
         -- reasonable debug configurations
