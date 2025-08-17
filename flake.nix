@@ -129,6 +129,17 @@
               vtsls
               prettierd
               (callPackage ./stylelint-lsp.nix {})
+              # Additional LSP servers
+              marksman # Markdown LSP
+              nil # Alternative Nix LSP
+              nodePackages.bash-language-server
+              nodePackages.yaml-language-server
+              nodePackages.dockerfile-language-server-nodejs
+              rust-analyzer
+              gopls
+              pyright
+              clang-tools # clangd
+              taplo # TOML LSP
             ];
           };
 
@@ -158,6 +169,11 @@
               snacks-nvim
               persistence-nvim
               pkgs.neovimPlugins.claudecode-nvim
+              trouble-nvim
+              refactoring-nvim
+              octo-nvim
+              grug-far-nvim
+              aerial-nvim
               # This is for if you only want some of the grammars
               # (nvim-treesitter.withPlugins (
               #   plugins: with plugins; [

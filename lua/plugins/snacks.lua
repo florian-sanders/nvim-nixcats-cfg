@@ -4,6 +4,7 @@ return {
   priority = 1000,
   opts = {
     cmdline = { enabled = true },
+    statuscolumn = { enabled = true },
     picker = {
       enabled = true,
       win = {
@@ -18,7 +19,7 @@ return {
       },
     },
     explorer = { enabled = true },
-    input = { 
+    input = {
       enabled = true,
       -- Make snacks input the default for vim.ui.input
       override = true,
@@ -40,9 +41,27 @@ return {
           arrow = '', -- arrow for chunk indication
         },
       },
-      scope = { enabled = false },
+      scope = { enabled = true },
     },
     zen = { enabled = true },
+    notify = {
+      enabled = true,
+      timeout = 3000,
+      max_width = 60,
+      max_height = 6,
+      style = 'compact',
+      top_down = true,
+    },
+    bigfile = {
+      enabled = true,
+      size = 1024 * 1024, -- 1MB
+      setup = function(ctx)
+        vim.b.minianimate_disable = true
+        vim.schedule(function()
+          vim.bo[ctx.buf].syntax = ctx.ft
+        end)
+      end,
+    },
   },
   init = function()
     vim.api.nvim_create_autocmd('User', {
@@ -445,6 +464,92 @@ return {
         Snacks.picker.lsp_workspace_symbols()
       end,
       desc = 'LSP Workspace Symbols',
+    },
+    {
+      '<leader>so',
+      function()
+        -- Get current buffer symbols from aerial using the correct API
+        local aerial_ok, aerial = pcall(require, 'aerial')
+        if not aerial_ok then
+          vim.notify('Aerial not available', vim.log.levels.WARN)
+          return
+        end
+
+        local bufnr = vim.api.nvim_get_current_buf()
+
+        -- Use aerial's data module to get symbols
+        local data_ok, data = pcall(require, 'aerial.data')
+        if not data_ok then
+          vim.notify('Aerial data module not available', vim.log.levels.WARN)
+          return
+        end
+
+        local symbols = data.get_symbols(bufnr)
+
+        if not symbols or #symbols == 0 then
+          vim.notify('No aerial symbols found', vim.log.levels.WARN)
+          return
+        end
+
+        -- Convert aerial symbols to snacks picker format
+        local items = {}
+        local function process_symbols(syms, level)
+          level = level or 0
+          for _, symbol in ipairs(syms) do
+            local indent = string.rep('  ', level)
+            local icon = ''
+            if symbol.kind then
+              -- Map common symbol kinds to icons
+              local icons = {
+                Class = '󰠱',
+                Method = '󰊕',
+                Function = '󰊕',
+                Property = '󰜢',
+                Variable = '󰀫',
+                Interface = '󰜰',
+                Module = '󰏗',
+                Constructor = '󰛦',
+                Enum = '󰕘',
+                String = '󰀬',
+                Object = '󰅩',
+              }
+              icon = icons[symbol.kind] or '󰈙'
+            end
+
+            table.insert(items, {
+              text = indent .. icon .. ' ' .. symbol.name,
+              lnum = symbol.lnum,
+              col = symbol.col or 1,
+              symbol = symbol,
+            })
+
+            -- Process children recursively
+            if symbol.children then
+              process_symbols(symbol.children, level + 1)
+            end
+          end
+        end
+
+        process_symbols(symbols)
+
+        -- Use snacks picker to display symbols
+        Snacks.picker.pick({
+          source = {
+            name = 'Aerial Symbols',
+            items = items,
+          },
+          preview = {
+            enabled = true,
+          },
+          prompt = 'Symbol: ',
+        }, function(item)
+          if item and item.lnum then
+            vim.api.nvim_win_set_cursor(0, { item.lnum, (item.col or 1) - 1 })
+            vim.cmd 'normal! zz'
+          end
+        end)
+      end,
+      desc = 'Outline/Symbols (Aerial)',
     },
   },
 }

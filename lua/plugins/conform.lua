@@ -22,6 +22,11 @@ return {
       -- is found.
       javascript = { 'prettierd', 'prettier', stop_after_first = true },
     },
+    formatters = {
+      stylua = {
+        args = { '--indent-type', 'Spaces', '--indent-width', '2', '--stdin-filepath', '$FILENAME', '-' },
+      },
+    },
   },
 }
 
