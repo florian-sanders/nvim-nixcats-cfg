@@ -3,6 +3,32 @@ return {
   lazy = false,
   priority = 1000,
   opts = {
+    dashboard = {
+      enabled = true,
+      preset = {
+        header = [[
+ ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗
+ ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║
+ ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║
+ ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║
+ ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║
+ ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝]],
+      },
+      sections = {
+        { section = 'header' },
+        { section = 'keys', gap = 1, padding = 1 },
+        {
+          section = 'startup',
+          padding = 1,
+          fn = function()
+            local dashboard = require('config.dashboard')
+            return dashboard.startup_section()
+          end,
+        },
+        { section = 'recent_files', limit = 8, padding = 1 },
+        { section = 'projects', limit = 8, padding = 1 },
+      },
+    },
     cmdline = { enabled = true },
     statuscolumn = { enabled = true },
     picker = {
@@ -70,6 +96,15 @@ return {
         Snacks.rename.on_rename_file(event.data.from, event.data.to)
       end,
     })
+    
+    -- Show dashboard on startup if no files are opened
+    vim.api.nvim_create_autocmd('VimEnter', {
+      callback = function()
+        if vim.fn.argc() == 0 then
+          Snacks.dashboard()
+        end
+      end,
+    })
     vim.api.nvim_create_autocmd('User', {
       pattern = 'VeryLazy',
       callback = function()
@@ -99,6 +134,14 @@ return {
     })
   end,
   keys = {
+    -- Dashboard
+    {
+      '<leader>D',
+      function()
+        Snacks.dashboard()
+      end,
+      desc = 'Dashboard',
+    },
     -- Top Pickers & Explorer
     {
       '<leader><space>',

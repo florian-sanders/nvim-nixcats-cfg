@@ -34,7 +34,6 @@
             mason-nvim
             mason-lspconfig-nvim
             mason-tool-installer-nvim
-            mason-nvim-dap-nvim
             fidget-nvim
             lazydev-nvim
 
@@ -45,7 +44,6 @@
             # Editor Features
             nvim-autopairs
             nvim-ts-autotag
-            comment-nvim
             conform-nvim
             flash-nvim
             inc-rename-nvim
@@ -55,11 +53,6 @@
             trouble-nvim
             persistence-nvim
 
-            # Debug Adapter Protocol
-            nvim-dap
-            nvim-dap-ui
-            nvim-nio
-            nvim-dap-go
 
             # Git Integration
             neogit
@@ -161,7 +154,13 @@
                   },
                   performance = {
                     reset_packpath = false,
-                    rtp = { reset = false }
+                    rtp = { 
+                      reset = false,
+                      disabled_plugins = {
+                        "gzip", "matchit", "matchparen", "netrwPlugin", 
+                        "tarPlugin", "tohtml", "tutor", "zipPlugin"
+                      }
+                    }
                   },
                   dev = {
                     -- Use plugins from Nix store first
@@ -251,19 +250,16 @@
               stylua
               prettierd
 
-              # Debug tools
-              delve
             ];
 
             shellHook = ''
-              echo "🚀 Neovim with 39 Nix-provided plugins loaded!"
+              echo "🚀 Neovim with 34 Nix-provided plugins loaded!"
               echo "📦 Missing plugins (like multiple-cursors.nvim) will be installed by lazy.nvim on first run."
               echo "🔧 Use 'nvim' to start editing."
               echo ""
               echo "Available tools:"
               echo "  • All LSP servers and formatters included"
               echo "  • Treesitter parsers pre-installed"
-              echo "  • Debug adapters ready (delve for Go)"
             '';
           };
         }

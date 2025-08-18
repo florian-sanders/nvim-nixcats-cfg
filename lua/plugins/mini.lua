@@ -1,5 +1,6 @@
 return {
   'echasnovski/mini.nvim',
+  event = { 'BufReadPre', 'BufNewFile' },
   config = function()
     -- Better Around/Inside textobjects
     --
