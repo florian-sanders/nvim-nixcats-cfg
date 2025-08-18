@@ -17,6 +17,9 @@ return {
     },
     indent = { enable = true, disable = { 'ruby' } },
 
+    -- Disable autotag in treesitter config (configured separately)
+    autotag = { enable = false },
+
     -- Incremental selection based on treesitter
     incremental_selection = {
       enable = true,

@@ -1,6 +1,29 @@
 local M = {}
 
 function M.setup()
+  -- Configure LSP hover appearance (K key) - not handled by blink.cmp
+  vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+    border = 'rounded',
+    max_width = 80,
+    max_height = 20,
+  })
+
+  -- Configure diagnostic appearance (not handled by blink)
+  vim.diagnostic.config({
+    float = {
+      border = 'rounded',
+      max_width = 80,
+      header = '',
+      prefix = '',
+    },
+    virtual_text = {
+      prefix = '●',
+    },
+    signs = true,
+    underline = true,
+    update_in_insert = false,
+  })
+
   --  This function gets run when an LSP attaches to a particular buffer.
   --    That is to say, every time a new file is opened that is associated with
   --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
@@ -153,10 +176,8 @@ function M.setup_servers()
     local binary_name = server_to_binary[server_name] or server_name
     if is_lsp_available(binary_name) then
       nix_servers[server_name] = cfg
-      print('Found ' .. server_name .. ' via Nix/PATH')
     else
       mason_servers[server_name] = cfg
-      print('Will install ' .. server_name .. ' via Mason')
     end
   end
   
