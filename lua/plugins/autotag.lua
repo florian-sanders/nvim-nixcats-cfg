@@ -1,5 +1,7 @@
 return {
   'windwp/nvim-ts-autotag',
+  event = { 'BufReadPost', 'BufNewFile' },
+  ft = { 'html', 'xml', 'tsx', 'jsx', 'vue', 'svelte' },
   opts = {
     enable_close = true, -- Auto close tags
     enable_rename = true, -- Auto rename pairs of tags

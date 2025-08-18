@@ -1,6 +1,7 @@
 return {
   'saghen/blink.cmp',
   version = '1.*',
+  event = 'InsertEnter',
   -- optional: provides snippets for the snippet source
   dependencies = { 'rafamadriz/friendly-snippets' },
 

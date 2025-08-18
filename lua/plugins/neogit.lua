@@ -3,7 +3,6 @@ return {
   dependencies = {
     'nvim-lua/plenary.nvim',
     'sindrets/diffview.nvim',
-    'nvim-telescope/telescope.nvim',
   },
   keys = {
     { '<leader>gg', '<cmd>Neogit<cr>', desc = 'Open Neogit' },
@@ -21,7 +20,7 @@ return {
       enabled = true,
     },
     integrations = {
-      telescope = true,
+      telescope = false,
       diffview = true,
     },
   },

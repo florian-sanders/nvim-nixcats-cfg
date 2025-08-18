@@ -1,5 +1,6 @@
 return {
   'nvim-treesitter/nvim-treesitter',
+  event = { 'BufReadPost', 'BufNewFile' },
   -- Don't run TSUpdate since we use Nix-provided parsers
   build = false,
   opts = {
